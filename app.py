@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from openai import OpenAI
+import openai
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.badges import badge
 
@@ -13,15 +13,14 @@ def validate_data(df):
     required_columns = ["post_id", "post_type", "likes", "shares", "comments", "avg_sentiment_score"]
     if not all(col in df.columns for col in required_columns):
         raise ValueError("Missing required columns in data")
-    
     if df.isnull().values.any():
         st.warning("Data contains null values")
 
 # GPT analysis function
 def ask_gpt(query, data_summary):
     try:
-        client = OpenAI(api_key="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")
-        response = client.chat.completions.create(
+        openai.api_key = "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"
+        response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a data analyst."},
@@ -30,7 +29,7 @@ def ask_gpt(query, data_summary):
             max_tokens=150,
             temperature=0.7
         )
-        return response.choices[0].message.content.strip()
+        return response["choices"][0]["message"]["content"].strip()
     except Exception as e:
         st.error(f"Error in GPT analysis: {str(e)}")
         return None
