@@ -139,7 +139,7 @@ def load_data():
         [98, "reel", 277, 39, 48, 0.68],
     ], columns=["post_id", "post_type", "likes", "shares", "comments", "avg_sentiment_score"])
 
- Main app
+# Main app
 try:
     # Load and validate data
     data = load_data()
@@ -210,12 +210,3 @@ try:
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
-
-st.header("🎯 Content Strategy Recommendations")
-st.markdown("""
-Here are some tips based on your data analysis:
-- 🧲 **Focus on reels** for higher engagement.
-- 😊 **Monitor sentiment scores** to ensure positive interactions.
-- 📸 **Experiment with carousels** to diversify content.
-- 📈 **Track post performance** regularly for optimization.
-""")
