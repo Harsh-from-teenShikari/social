@@ -36,7 +36,7 @@ def ask_gpt(query, data_summary):
 
 # Header with badges
 st.title("📱 Social Media Analyzer with GPT")
-badge("https://github.com/your-username/social-media-analyzer")
+badge("https://github.com/Harsh-from-teenShikari/social")
 add_vertical_space(2)
 
 # Sidebar filters
