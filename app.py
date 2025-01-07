@@ -25,14 +25,26 @@ data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"]
 # Function to connect to OpenAI API
 def ask_gpt(query, data_summary):
     openai.api_key = "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"
-    prompt = f"You are a data analyst. Here is the social media data summary: {data_summary}. Answer the following question: {query}"
+    # Combine the data summary and query into the prompt
+    prompt = f"""You are a data analyst. Analyze the following social media data:
+    {data_summary}
 
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
+    Now answer the question: {query}
+    """
+
+    try:
+        # Send the request to OpenAI
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=200,
+            temperature=0.7,
+        )
+        return response.choices[0].text.strip()
+
+    except openai.error.OpenAIError as e:
+        return f"Error: {e}"
+
 
 # Header with badges
 st.title("📱 Social Media Analyzer with GPT")
@@ -66,5 +78,29 @@ st.plotly_chart(fig, use_container_width=True)
 # Interactive GPT Section
 st.header("💬 Ask the Data Analyst (Powered by GPT)")
 st.markdown("### 🤖 Chat with the AI to get insights from your data!")
+
 data_summary = filtered_data.describe().to_string()
+
+# Create a text input box and button for user interaction
+col1, col2 = st.columns([4, 1])
+with col1:
+    query = st.text_input("Ask a question about the data:")
+with col2:
+    if st.button("Analyze"):
+        if query:
+            with st.spinner("Analyzing..."):
+                answer = ask_gpt(query, data_summary)
+                st.markdown(f"### 🤖 Answer: {answer}")
+        else:
+            st.warning("Please enter a question.")
+
+# Recommendations Section
+st.header("🎯 Content Strategy Recommendations")
+st.markdown("""
+Here are some tips based on your data analysis:
+- 🧲 **Focus on reels** for higher engagement.
+- 😊 **Monitor sentiment scores** to ensure positive interactions.
+- 📸 **Experiment with carousels** to diversify content.
+- 📈 **Track post performance** regularly for optimization.
+""")
 
