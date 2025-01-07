@@ -192,21 +192,31 @@ try:
             with st.expander(question):
                 st.write(answer)
 
-        # GPT Section
-        st.header("💬 Ask the Data Analyst (Powered by GPT)")
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            query = st.text_input("Ask a question about the data:")
-            answer_placeholder = st.empty()  # Placeholder for the answer output
-            with col2:
-                if st.button("Analyze"):
-                    if query:
-                        with st.spinner("Analyzing..."):
-                            answer = ask_gpt(query, data_summary)
-                            if answer:
-                                answer_placeholder.markdown(f"### 🤖 Answer: {answer}")
-                            else:
-                                st.warning("Please enter a question.")
+       The current code for the GPT Section can be improved to ensure proper handling and displaying of the GPT analysis result. Here's the updated code:
+
+
+# GPT Section
+st.header("💬 Ask the Data Analyst (Powered by GPT)")
+data_summary = filtered_data.describe().to_string()
+
+col1, col2 = st.columns([4, 1])
+with col1:
+    query = st.text_input("Ask a question about the data:")
+    answer_placeholder = st.empty()  # Placeholder for the answer output
+with col2:
+    if st.button("Analyze"):
+        if query:
+            with st.spinner("Analyzing..."):
+                answer = ask_gpt(query, data_summary)
+                if answer:
+                    answer_placeholder.markdown(f"### 🤖 Answer: {answer}")
+                else:
+                    st.warning("No answer returned from GPT.")
+        else:
+            st.warning("Please enter a question.")
+```
+
+This ensures the answer is correctly displayed in the placeholder and warnings are shown appropriately.
 
     else:
         st.warning("No data available for the selected filters.")
