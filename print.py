@@ -1,11 +1,40 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from streamlit_extras.add_vertical_space import add_vertical_space
+from streamlit_extras.badges import badge
 
 # Set page configuration
-st.set_page_config(page_title="Social Media Analyzer", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Social Media Analyzer with GPT", page_icon="📊", layout="wide")
 
-# Sample dataset
+# Data validation function
+def validate_data(df):
+    required_columns = ["post_id", "post_type", "likes", "shares", "comments", "avg_sentiment_score"]
+    if not all(col in df.columns for col in required_columns):
+        raise ValueError("Missing required columns in data")
+    if df.isnull().values.any():
+        st.warning("Data contains null values")
+
+# Predefined Q&A
+Frequently_asked_questions = {
+    "What is the most popular post type?": "Reels tend to have the highest engagement rates, making them the most popular post type.",
+    "How is engagement rate calculated?": "Engagement rate is calculated as the sum of likes, shares, and comments divided by the total number of likes, multiplied by 100.",
+    "What is a good sentiment score?": "A sentiment score above 0.5 is considered positive, while scores below -0.5 are considered negative.",
+    "What does the virality score represent?": "Virality score represents how likely a post is to be shared. It is calculated as (shares * 2 + comments) / likes * 100.",
+}
+
+# Fake GPT analysis function
+def ask_gpt_fake(query):
+    fake_answers = {
+        "What post type has the highest engagement rate?": "Reels have the highest engagement rate, averaging 87.5%.",
+        "Which post type is least popular?": "Carousel posts are the least popular, with the lowest total engagement.",
+        "What is the average sentiment score across all posts?": "The average sentiment score across all posts is approximately 0.05.",
+        "How many posts have a negative sentiment score?": "Two posts have a negative sentiment score.",
+        "What is the post with the highest virality score?": "Post ID 2 has the highest virality score of 35.3%.",
+    }
+    return fake_answers.get(query, "I don't have an answer for that question.")
+
+# Cache data loading
 @st.cache_data
 def load_data():
     return pd.DataFrame([
@@ -16,35 +45,74 @@ def load_data():
         [5, "carousel", 120, 34, 10, 0.30],
     ], columns=["post_id", "post_type", "likes", "shares", "comments", "avg_sentiment_score"])
 
-# Predefined Q&A for interactive analysis
-fake_ai_responses = {
-    "What is the most popular post type?": "Based on the analysis, the most popular post type is 'Reel' with an average engagement rate of 65%.",
-    "How can we improve engagement rates?": "Improving engagement rates can be achieved by posting more Reels and engaging captions. Posts with a higher sentiment score tend to perform better.",
-    "What is the overall sentiment of posts?": "The average sentiment score of the dataset is 0.16, indicating a neutral tone overall. However, Reels tend to have more negative sentiment due to controversial topics.",
-    "Which posts are most likely to go viral?": "Posts with a higher 'virality score' tend to be Reels with engaging content. The top viral post had a virality score of 80%.",
-    "How can we reduce negative sentiment?": "Reducing negative sentiment can be done by avoiding controversial topics and focusing on positive, uplifting content."
-}
+# Main app
+try:
+    # Load and validate data
+    data = load_data()
+    validate_data(data)
+    
+    # Calculate metrics
+    data["total_engagement"] = data["likes"] + data["shares"] + data["comments"]
+    data["engagement_rate"] = data["total_engagement"] / data["likes"] * 100
+    data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"] * 100
+    
+    # UI Elements
+    st.title("📱 Social Media Analyzer with GPT")
+    badge("github", "https://github.com/Harsh-from-teenShikari/social")
+    add_vertical_space(2)
+    
+    # Sidebar filters
+    st.sidebar.header("📊 Filter Options")
+    post_types = st.sidebar.multiselect(
+        "Select Post Types",
+        options=data["post_type"].unique(),
+        default=data["post_type"].unique()
+    )
+    
+    # Filter data
+    filtered_data = data[data["post_type"].isin(post_types)]
+    
+    # Metrics
+    if not filtered_data.empty:
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("🖍 Total Posts", len(filtered_data))
+        with col2:
+            st.metric("📊 Avg. Engagement", f"{filtered_data['total_engagement'].mean():.0f}")
+        with col3:
+            st.metric("📈 Engagement Rate", f"{filtered_data['engagement_rate'].mean():.1f}%")
+        with col4:
+            st.metric("😊 Avg. Sentiment", f"{filtered_data['avg_sentiment_score'].mean():.2f}")
+        
+        # Visualizations
+        st.header("📊 Visual Analytics")
+        fig = px.bar(filtered_data, x="post_type", y="total_engagement",
+                    color="post_type", title="Total Engagement by Post Type",
+                    template="plotly_white")
+        fig.update_layout(showlegend=False)
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Predefined Q&A Section
+        st.header("📖 frequent Insights")
+        for question, answer in Frequently_asked_questions.items():
+            with st.expander(question):
+                st.write(answer)
 
-# Load data
-data = load_data()
+        # GPT Section
+        st.header("💬 Ask the Data Analyst (Powered by GPT)")
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            query = st.text_input("Ask a question about the data:")
+        with col2:
+            if st.button("Analyze"):
+                if query:
+                    with st.spinner("Analyzing..."):
+                        answer = ask_gpt_fake(query)
+                        st.markdown(f"### 🤖 Answer: {answer}")
+                else:
+                    st.warning("Please enter a question.")
+    else:
+        st.warning("No data available for the selected filters.")
 
-# Calculate metrics
-data["total_engagement"] = data["likes"] + data["shares"] + data["comments"]
-data["engagement_rate"] = data["total_engagement"] / data["likes"] * 100
-data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"] * 100
-
-# UI Elements
-st.title("📱 Social Media Analyzer")
-st.header("📊 Visual Analytics")
-fig = px.bar(data, x="post_type", y="total_engagement", color="post_type", title="Total Engagement by Post Type")
-st.plotly_chart(fig, use_container_width=True)
-
-# Ask the Data Analyst Section
-st.header("💬 Ask the Data Analyst (Powered by AI)")
-question = st.selectbox(
-    "Select a question to ask:",
-    list(fake_ai_responses.keys())
-)
-
-if st.button("Analyze"):
-    st.markdown(f"### 🤖 Answer: {fake_ai_responses[question]}")
+except Exception as e:
+    st.error(f"An error occurred: {str(e)}")
