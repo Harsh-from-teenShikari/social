@@ -24,7 +24,7 @@ data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"]
 
 # Function to connect to OpenAI API
 def ask_gpt(query, data_summary):
-    openai.api_key ="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"
+    openai.api_key = "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"
     prompt = f"You are a data analyst. Here is the social media data summary: {data_summary}. Answer the following question: {query}"
 
     response = openai.Completion.create(
@@ -66,20 +66,4 @@ st.plotly_chart(fig, use_container_width=True)
 # Interactive GPT Section
 st.header("💬 Ask the Data Analyst (Powered by GPT)")
 st.markdown("### 🤖 Chat with the AI to get insights from your data!")
-data_summary = filtered_data.describe().to_string()
-query = st.text_input("Ask a question about the data:", "What is the most viral post?")
-
-if query:
-    with st.spinner("Analyzing..."):
-        answer = ask_gpt(query, data_summary)
-        st.markdown(f"### 🤖 Answer: {answer}")
-
-# Recommendations Section
-st.header("🎯 Content Strategy Recommendations")
-st.markdown("""
-Here are some tips based on your data analysis:
-- 🧲 **Focus on reels** for higher engagement.
-- 😊 **Monitor sentiment scores** to ensure positive interactions.
-- 📸 **Experiment with carousels** to diversify content.
-- 📈 **Track post performance** regularly for optimization.
-""")
+data_summary = filtered_data.d
