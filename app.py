@@ -17,7 +17,7 @@ def validate_data(df):
         st.warning("Data contains null values")
 
 # Predefined Q&A
-predefined_questions = {
+Frequently_asked_questions = {
     "What is the most popular post type?": "Reels tend to have the highest engagement rates, making them the most popular post type.",
     "How is engagement rate calculated?": "Engagement rate is calculated as the sum of likes, shares, and comments divided by the total number of likes, multiplied by 100.",
     "What is a good sentiment score?": "A sentiment score above 0.5 is considered positive, while scores below -0.5 are considered negative.",
