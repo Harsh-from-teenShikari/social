@@ -100,8 +100,8 @@ try:
         st.plotly_chart(fig, use_container_width=True)
         
         # Predefined Q&A Section
-        st.header("📖 Predefined Insights")
-        for question, answer in predefined_questions.items():
+        st.header("📖 frequent Insights")
+        for question, answer in Frequently_asked_questions.items():
             with st.expander(question):
                 st.write(answer)
 
