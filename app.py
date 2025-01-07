@@ -16,7 +16,15 @@ def validate_data(df):
     if df.isnull().values.any():
         st.warning("Data contains null values")
 
-# GPT analysis function (Updated for OpenAI >= 1.0.0)
+# Predefined Q&A
+predefined_questions = {
+    "What is the most popular post type?": "Reels tend to have the highest engagement rates, making them the most popular post type.",
+    "How is engagement rate calculated?": "Engagement rate is calculated as the sum of likes, shares, and comments divided by the total number of likes, multiplied by 100.",
+    "What is a good sentiment score?": "A sentiment score above 0.5 is considered positive, while scores below -0.5 are considered negative.",
+    "What does the virality score represent?": "Virality score represents how likely a post is to be shared. It is calculated as (shares * 2 + comments) / likes * 100.",
+}
+
+# GPT analysis function
 def ask_gpt(query, data_summary):
     try:
         openai.api_key = "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"
@@ -90,6 +98,12 @@ try:
         fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
         
+        # Predefined Q&A Section
+        st.header("📖 Predefined Insights")
+        for question, answer in predefined_questions.items():
+            with st.expander(question):
+                st.write(answer)
+
         # GPT Section
         st.header("💬 Ask the Data Analyst (Powered by GPT)")
         data_summary = filtered_data.describe().to_string()
