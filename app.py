@@ -1,3 +1,4 @@
+hey this is my code
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -6,7 +7,7 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.badges import badge
 
 # Set page configuration
-st.set_page_config(page_title="Social Media Analyzer with GPT", page_icon="\ud83d\udcca", layout="wide")
+st.set_page_config(page_title="Social Media Analyzer with GPT", page_icon="📊", layout="wide")
 
 # Data validation function
 def validate_data(df):
@@ -18,18 +19,13 @@ def validate_data(df):
 
 # Predefined Q&A
 Frequently_asked_questions = {
-    "What is the post type with the highest total engagement?": "Reels have the highest total engagement, as they generally receive more likes, shares, and comments compared to other post types.",
-    "Which post type has the highest average engagement rate?": "Based on the data, static images have the highest average engagement rate because of their strong performance in shares and comments relative to likes.",
-    "What is the sentiment trend in the data?": "The sentiment trend shows a mix of positive and negative sentiment. Posts like static images and carousels tend to have neutral to positive sentiments, while some reels have a slightly negative sentiment score.",
-    "How do reels compare to static images in terms of virality?": "Reels have a higher virality score compared to static images, as they receive more shares and comments relative to likes.",
-    "What is the average engagement rate for all posts?": "The average engagement rate across all posts is approximately 130.1%, indicating strong interactions relative to likes.",
-    "Which post had the lowest sentiment score, and why?": "Post ID 3 (a reel) had the lowest sentiment score of -0.7, possibly due to negative comments or audience reactions.",
-    "What is the relationship between post type and sentiment score?": "Static images and carousels generally have more neutral or slightly positive sentiment scores, while reels show a wider range, including negative scores.",
-    "Which metric is most critical for determining post virality?": "Shares are the most critical metric for determining virality, as they are weighted more heavily in the virality score formula.",
-    "How many posts have a positive sentiment score?": "Based on the data, 3 out of 5 posts have a positive sentiment score (above 0).",
-    "What is the most common post type in the dataset?": "Reels are the most common post type, making up the majority of the dataset."
+    "What is the most popular post type?": "Reels tend to have the highest engagement rates, making them the most popular post type.",
+    "How is engagement rate calculated?": "Engagement rate is calculated as the sum of likes, shares, and comments divided by the total number of likes, multiplied by 100.",
+    "What is a good sentiment score?": "A sentiment score above 0.5 is considered positive, while scores below -0.5 are considered negative.",
+    "What does the virality score represent?": "Virality score represents how likely a post is to be shared. It is calculated as (shares * 2 + comments) / likes * 100.",
 }
 
+# GPT analysis function
 # GPT analysis function
 def ask_gpt(query, data_summary):
     try:
@@ -62,58 +58,58 @@ try:
     # Load and validate data
     data = load_data()
     validate_data(data)
-
+    
     # Calculate metrics
     data["total_engagement"] = data["likes"] + data["shares"] + data["comments"]
     data["engagement_rate"] = data["total_engagement"] / data["likes"] * 100
     data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"] * 100
-
+    
     # UI Elements
-    st.title("\ud83d\udcf1 Social Media Analyzer with GPT")
+    st.title("📱 Social Media Analyzer with GPT")
     badge("github", "https://github.com/Harsh-from-teenShikari/social")
     add_vertical_space(2)
-
+    
     # Sidebar filters
-    st.sidebar.header("\ud83d\udcca Filter Options")
+    st.sidebar.header("📊 Filter Options")
     post_types = st.sidebar.multiselect(
         "Select Post Types",
         options=data["post_type"].unique(),
         default=data["post_type"].unique()
     )
-
+    
     # Filter data
     filtered_data = data[data["post_type"].isin(post_types)]
-
+    
     # Metrics
     if not filtered_data.empty:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("\ud83d\udcdd Total Posts", len(filtered_data))
+            st.metric("📝 Total Posts", len(filtered_data))
         with col2:
-            st.metric("\ud83d\udcca Avg. Engagement", f"{filtered_data['total_engagement'].mean():.0f}")
+            st.metric("📊 Avg. Engagement", f"{filtered_data['total_engagement'].mean():.0f}")
         with col3:
-            st.metric("\ud83d\udcc8 Engagement Rate", f"{filtered_data['engagement_rate'].mean():.1f}%")
+            st.metric("📈 Engagement Rate", f"{filtered_data['engagement_rate'].mean():.1f}%")
         with col4:
-            st.metric("\ud83d\ude0a Avg. Sentiment", f"{filtered_data['avg_sentiment_score'].mean():.2f}")
-
+            st.metric("😊 Avg. Sentiment", f"{filtered_data['avg_sentiment_score'].mean():.2f}")
+        
         # Visualizations
-        st.header("\ud83d\udcca Visual Analytics")
+        st.header("📊 Visual Analytics")
         fig = px.bar(filtered_data, x="post_type", y="total_engagement",
                     color="post_type", title="Total Engagement by Post Type",
                     template="plotly_white")
         fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
-
+        
         # Predefined Q&A Section
-        st.header("\ud83d\udcd6 Frequent Insights")
+        st.header("📖 frequent Insights")
         for question, answer in Frequently_asked_questions.items():
             with st.expander(question):
                 st.write(answer)
 
         # GPT Section
-        st.header("\ud83d\udcac Ask the Data Analyst (Powered by GPT)")
+        st.header("💬 Ask the Data Analyst (Powered by GPT)")
         data_summary = filtered_data.describe().to_string()
-
+        
         col1, col2 = st.columns([4, 1])
         with col1:
             query = st.text_input("Ask a question about the data:")
@@ -123,7 +119,7 @@ try:
                     with st.spinner("Analyzing..."):
                         answer = ask_gpt(query, data_summary)
                         if answer:
-                            st.markdown(f"### \ud83e\udd16 Answer: {answer}")
+                            st.markdown(f"### 🤖 Answer: {answer}")
                 else:
                     st.warning("Please enter a question.")
     else:
