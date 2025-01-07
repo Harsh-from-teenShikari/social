@@ -197,12 +197,15 @@ try:
         col1, col2 = st.columns([4, 1])
         with col1:
             query = st.text_input("Ask a question about the data:")
+        answer_placeholder = st.empty()
         with col2:
             if st.button("Analyze"):
                 if query:
                     with st.spinner("Analyzing..."):
                         answer = ask_gpt_fake(query)
-                        st.markdown(f"### 🤖 Answer: {answer}")
+                        if answer:
+                            answer_placeholder.markdown(f"### 🤖 Answer: {answer}")
+                        #st.markdown(f"### 🤖 Answer: {answer}")
                 else:
                     st.warning("Please enter a question.")
     else:
@@ -210,3 +213,13 @@ try:
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
+
+# Recommendations Section
+st.header("🎯 Content Strategy Recommendations")
+st.markdown("""
+Here are some tips based on your data analysis:
+- 🧲 **Focus on reels** for higher engagement.
+- 😊 **Monitor sentiment scores** to ensure positive interactions.
+- 📸 **Experiment with carousels** to diversify content.
+- 📈 **Track post performance** regularly for optimization.
+""")
