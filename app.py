@@ -16,7 +16,7 @@ def validate_data(df):
     if df.isnull().values.any():
         st.warning("Data contains null values")
 
-# GPT analysis function
+# GPT analysis function (Updated for OpenAI >= 1.0.0)
 def ask_gpt(query, data_summary):
     try:
         openai.api_key = "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"
@@ -25,11 +25,9 @@ def ask_gpt(query, data_summary):
             messages=[
                 {"role": "system", "content": "You are a data analyst."},
                 {"role": "user", "content": f"Here is the social media data summary: {data_summary}. {query}"}
-            ],
-            max_tokens=150,
-            temperature=0.7
+            ]
         )
-        return response["choices"][0]["message"]["content"].strip()
+        return response.choices[0].message["content"].strip()
     except Exception as e:
         st.error(f"Error in GPT analysis: {str(e)}")
         return None
