@@ -24,7 +24,7 @@ data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"]
 
 # Function to connect to OpenAI API
 def ask_gpt(query, data_summary):
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
+    openai.api_key ="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"
     prompt = f"You are a data analyst. Here is the social media data summary: {data_summary}. Answer the following question: {query}"
 
     response = openai.Completion.create(
