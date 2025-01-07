@@ -4,6 +4,7 @@ import plotly.express as px
 import openai
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_extras.badges import badge
+import asyncio
 
 # Set page configuration
 st.set_page_config(page_title="Social Media Analyzer with GPT", page_icon="📊", layout="wide")
@@ -23,9 +24,9 @@ data["engagement_rate"] = data["total_engagement"] / data["likes"] * 100
 data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"] * 100
 
 # Function to connect to OpenAI API
-def ask_gpt(query, data_summary):
+async def ask_gpt(query, data_summary):
     openai.api_key ="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"
-    response = openai.ChatCompletion.create(
+    response = await openai.ChatCompletion.acreate(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a data analyst."},
@@ -78,7 +79,7 @@ with col2:
     if st.button("Analyze"):
         if query:
             with st.spinner("Analyzing..."):
-                answer = ask_gpt(query, data_summary)
+                answer = asyncio.run(ask_gpt(query, data_summary))
                 st.markdown(f"### 🤖 Answer: {answer}")
         else:
             st.warning("Please enter a question.")
