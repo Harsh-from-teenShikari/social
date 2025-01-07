@@ -27,12 +27,13 @@ data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"]
 async def ask_gpt(query, data_summary):
     openai.api_key ="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"
     response = await openai.ChatCompletion.acreate(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a data analyst."},
             {"role": "user", "content": f"Here is the social media data summary: {data_summary}. {query}"}
         ],
-        max_tokens=150
+        max_tokens=150,
+        temperature=0.7
     )
     return response.choices[0].message["content"].strip()
 
