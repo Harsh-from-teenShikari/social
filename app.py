@@ -66,4 +66,5 @@ st.plotly_chart(fig, use_container_width=True)
 # Interactive GPT Section
 st.header("💬 Ask the Data Analyst (Powered by GPT)")
 st.markdown("### 🤖 Chat with the AI to get insights from your data!")
-data_summary = filtered_data.d
+data_summary = filtered_data.describe().to_string()
+
