@@ -25,30 +25,18 @@ data["virality_score"] = (data["shares"] * 2 + data["comments"]) / data["likes"]
 # Function to connect to OpenAI API
 def ask_gpt(query, data_summary):
     openai.api_key = "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"
-    # Combine the data summary and query into the prompt
-    prompt = f"""You are a data analyst. Analyze the following social media data:
-    {data_summary}
+    prompt = f"You are a data analyst. Here is the social media data summary: {data_summary}. Answer the following question: {query}"
 
-    Now answer the question: {query}
-    """
-
-    try:
-        # Send the request to OpenAI
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=200,
-            temperature=0.7,
-        )
-        return response.choices[0].text.strip()
-
-    except openai.error.OpenAIError as e:
-        return f"Error: {e}"
-
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=150
+    )
+    return response.choices[0].text.strip()
 
 # Header with badges
 st.title("📱 Social Media Analyzer with GPT")
-badge(type="github", name="Harsh-from-teenShikari/social")
+badge("github", "https://github.com/Harsh-from-teenShikari/social")
 add_vertical_space(2)
 
 # Sidebar filters
@@ -103,4 +91,3 @@ Here are some tips based on your data analysis:
 - 📸 **Experiment with carousels** to diversify content.
 - 📈 **Track post performance** regularly for optimization.
 """)
-
