@@ -20,7 +20,7 @@ def validate_data(df):
 # GPT analysis function
 def ask_gpt(query, data_summary):
     try:
-        client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+        client = OpenAI(api_key="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")
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
