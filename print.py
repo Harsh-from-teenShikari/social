@@ -139,7 +139,7 @@ def load_data():
         [98, "reel", 277, 39, 48, 0.68],
     ], columns=["post_id", "post_type", "likes", "shares", "comments", "avg_sentiment_score"])
 
-# Main app
+ Main app
 try:
     # Load and validate data
     data = load_data()
@@ -192,37 +192,25 @@ try:
             with st.expander(question):
                 st.write(answer)
 
-       The current code for the GPT Section can be improved to ensure proper handling and displaying of the GPT analysis result. Here's the updated code:
-
-
-# GPT Section
-st.header("💬 Ask the Data Analyst (Powered by GPT)")
-data_summary = filtered_data.describe().to_string()
-
-col1, col2 = st.columns([4, 1])
-with col1:
-    query = st.text_input("Ask a question about the data:")
-    answer_placeholder = st.empty()  # Placeholder for the answer output
-with col2:
-    if st.button("Analyze"):
-        if query:
-            with st.spinner("Analyzing..."):
-                answer = ask_gpt(query, data_summary)
-                if answer:
-                    answer_placeholder.markdown(f"### 🤖 Answer: {answer}")
+        # GPT Section
+        st.header("💬 Ask the Data Analyst (Powered by GPT)")
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            query = st.text_input("Ask a question about the data:")
+        with col2:
+            if st.button("Analyze"):
+                if query:
+                    with st.spinner("Analyzing..."):
+                        answer = ask_gpt_fake(query)
+                        st.markdown(f"### 🤖 Answer: {answer}")
                 else:
-                    st.warning("No answer returned from GPT.")
-        else:
-            st.warning("Please enter a question.")
-```
-
-This ensures the answer is correctly displayed in the placeholder and warnings are shown appropriately.
-
+                    st.warning("Please enter a question.")
     else:
         st.warning("No data available for the selected filters.")
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
+
 st.header("🎯 Content Strategy Recommendations")
 st.markdown("""
 Here are some tips based on your data analysis:
