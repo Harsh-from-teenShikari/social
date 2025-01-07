@@ -197,14 +197,17 @@ try:
         col1, col2 = st.columns([4, 1])
         with col1:
             query = st.text_input("Ask a question about the data:")
-        with col2:
-            if st.button("Analyze"):
-                if query:
-                    with st.spinner("Analyzing..."):
-                        answer = ask_gpt_fake(query)
-                        st.markdown(f"### 🤖 Answer: {answer}")
-                else:
-                    st.warning("Please enter a question.")
+            answer_placeholder = st.empty()  # Placeholder for the answer output
+            with col2:
+                if st.button("Analyze"):
+                    if query:
+                        with st.spinner("Analyzing..."):
+                            answer = ask_gpt(query, data_summary)
+                            if answer:
+                                answer_placeholder.markdown(f"### 🤖 Answer: {answer}")
+                            else:
+                                st.warning("Please enter a question.")
+
     else:
         st.warning("No data available for the selected filters.")
 
